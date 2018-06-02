@@ -1,29 +1,61 @@
+require "pry"
 class PigLatinizer
-  attr_reader :word
+  attr_accessor :word
 
-  def initialize
-    @word = word
-  end
-  def piglatinize(word)
-    word_array = word.split("")
-    vowels = /\b[aeiouAEIOU]/
-    consonants_3 = /\A(?i:(?![aeiou])[a-z]){3}/
-    consonants_2 = /\A(?i:(?![aeiou])[a-z]){2}/
-    consonant_1 = /\A(?i:(?![aeiou])[a-z]){1}/
-    result = []
+def piglatinize(phrase)
+  each_word = phrase.split(" ")
+  result = each_word.collect do |word|
 
-    if word_array[0].scan(vowels) != []
-      result = [word_array[0..word_array.length-1]] + ["way"]
-    end
-    if word.scan(consonant_1) != []
-      result = [word_array[1..word_array.length-1]] + [word_array[0]] + ["ay"]
-    end
-    if word.scan(consonants_2) != []
-      result = [word_array[2..word_array.length-1]] + [word_array[0..1]] + ["ay"]
-    end
-    if word.scan(consonants_3) != []
-      result = [word_array[3..word_array.length-1]] + [word_array[0..2]] + ["ay"]
-    end
-    return result.join("")
+  if !consonant(word[0])
+    word += "w"
+  elsif consonant(word[0]) && consonant(word[1]) && consonant(word[2])
+    word = word.slice(3..-1) + word.slice(0..2)
+  elsif consonant(word[0]) && consonant(word[1])
+    word = word.slice(2..-1) + word.slice(0..1)
+  else
+    word = word.slice(1..-1) + word[0]
   end
+  word << "ay"
 end
+result.join(" ")
+end
+  def consonant(character)
+    vowels = /[aeiouAEIOU]/
+    !character.match(vowels)
+  end
+
+
+
+end
+# result = []
+#
+# if word.split.length > 1
+#   array = word.split
+#   if consonant(array[0])
+#     word_array = array.drop(1)
+#   else
+#     word_array = array
+#   end
+# #end
+#
+# elsif consonant()
+#   if word.split.length == 1
+#     result << word + "way"
+#   else
+#     result << word[0] + "way"
+#   end
+# #end
+#
+# elsif word.split.length == 1 && !vowels.include?(word[0].downcase)
+#   split_word = word.split(/([aeiou].*)/)
+#   result << split_word[1] + split_word[0] + "ay"
+# #end
+#   if word_array
+#     word_array.each do |string|
+#       split_word = string.split(/([aeiou].*)/)
+#       result << split_word[1] + split_word[0] + "ay"
+#     end
+#   end
+#   result.join(" ")
+# end
+#
